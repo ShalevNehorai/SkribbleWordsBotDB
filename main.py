@@ -16,7 +16,7 @@ bot = commands.Bot(command_prefix='!')
 async def on_ready():
   print(f'{bot.user.name} has connected to Discord!')
 
-@bot.command(name="all-words")
+@bot.command(name="all-words", help="return file with all the words in the DB")
 async def get_all_words(ctx):
   await ctx.send('making the file')
   words = helper.get_all_words()
@@ -28,7 +28,7 @@ async def get_all_words(ctx):
   else:
     await ctx.send('no words has been found')
 
-@bot.command(name="first-words")
+@bot.command(name="first-words", help='argu: number:int return file with the {number} first words')
 async def get_first_words(ctx, number:int):
   await ctx.send('making the file')
   words = helper.get_first_words(number)
@@ -40,7 +40,7 @@ async def get_first_words(ctx, number:int):
   else:
     await ctx.send('no words has been found')
 
-@bot.command(name="last-words")
+@bot.command(name="last-words", help='argu: number:int return file with the {number} last words')
 async def get_last_words(ctx, number:int):
   await ctx.send('making the file')
   words = helper.get_last_words(number)
@@ -52,7 +52,7 @@ async def get_last_words(ctx, number:int):
   else:
     await ctx.send('no words has been found')
 
-@bot.command(name="random-words")
+@bot.command(name="random-words", help='argu: number:int return file with {number} random words')
 async def get_random_words(ctx, number:int):
   await ctx.send('making the file')
   words = helper.get_random_words(number)
@@ -64,12 +64,12 @@ async def get_random_words(ctx, number:int):
   else:
     await ctx.send('no words has been found')
 
-@bot.command(name="words-amount")
+@bot.command(name="words-amount", help='print the amount of words in the DB')
 async def get_words_number(ctx):
   num = helper.get_words_number()
-  await ctx.send(num)
+  await ctx.send(f'we have **{num}** words!')
 
-@bot.command(name='add-word')
+@bot.command(name='add-word', help='argu: arg:str add the coma separeted words in {arg} to the DB')
 async def add_words(ctx, *, arg):
   word_list = arg.split(',')
   count_words = 0
