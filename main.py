@@ -1,4 +1,5 @@
 import os
+import re
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -23,7 +24,6 @@ async def get_all_words(ctx):
   else:
     await ctx.send('no words has been found')
 
-#TODO check the value is intager
 @bot.command(name="first-words")
 async def get_first_words(ctx, number:int):
   words = helper.get_first_words(number)
@@ -55,8 +55,35 @@ async def get_words_number(ctx):
 
 @bot.command(name='add-word')
 async def add_words(ctx, *, arg):
-  helper.add_words(arg)
-  await ctx.send('Words added to the list')
+  word_list = arg.split(',')
+  count_words = 0
+  for word in word_list:
+    if bool(re.match('[א-ת0-9\s]+$', word)):
+      helper.__add_word__(word)
+      count_words += 1
+    else:
+      await ctx.send(f'{word} contine non aturaize characters and not added to the list')
+
+  await ctx.send(f'{count_words} Words added to the list')
+
+@bot.event
+async def on_command_error(ctx, error):
+  if isinstance(error, commands.errors.CheckFailure):
+    await ctx.send('you don\'t have permission for this command')
+  elif isinstance(error, commands.errors.MissingRequiredArgument):
+    await ctx.send(f'missing command argument {error.param}')
+  elif isinstance(error, commands.errors.BadArgument):
+    await ctx.send(f'parameter must be number')
+  elif isinstance(error, commands.errors.CommandNotFound):
+    print('command not found')
+  else:
+    await ctx.send('some error occured with the command')
+    guild = ctx.guild
+    log_channel = discord.utils.get(guild.channels, name='error-logs')
+    if log_channel:
+      await log_channel.send(error)
+    else:
+      await ctx.send(error)
 
 keep_alive()
 bot.run(TOKEN)

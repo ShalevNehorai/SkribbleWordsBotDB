@@ -1,17 +1,15 @@
 
-import os
 from replit import db
 import random
 
-#TODO: add non character allowed check
 def __add_word__(word):
   matches = db.prefix(word)
   if matches:
     print(f'word {word} already exists')
   else:
     print(f'word: ;{word}; has added')
-    db[word] = word
-
+    #db[word] = word
+    
 def add_words(words):
   wordsList = words.split(',')
   for word in wordsList:
@@ -81,9 +79,5 @@ def delete_all_list():
   for key in keys:
     delete_key(key)
   print('all keys deleted')
-
-#del db["43242#$@עובד"]
-
-
 
   
