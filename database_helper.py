@@ -1,19 +1,24 @@
 
 from replit import db
 import random
+import re
 
 def __add_word__(word):
   matches = db.prefix(word)
   if matches:
     print(f'word {word} already exists')
   else:
+    db[word] = word
     print(f'word: ;{word}; has added')
-    #db[word] = word
     
 def add_words(words):
-  wordsList = words.split(',')
-  for word in wordsList:
-    __add_word__(word.strip())
+  words_list = words.split(',')
+  for word in words_list:
+    word = word.replace('\'', '')
+    if bool(re.match('[א-ת0-9\s]+$', word)):
+      __add_word__(word)
+    else:
+      print(f'{word} containe non aturaize characters and not added to the list')
 
 def get_value(word):
   matches = db.prefix(word)
@@ -22,12 +27,10 @@ def get_value(word):
     
 def get_all_words():
   keys = db.keys()
-  print(keys)
   words = ""
   for i in keys:
     word = get_value(i)
     words += f'{word}, '
-    print(i)
   return words
 
 def get_first_words(number:int):
