@@ -64,6 +64,15 @@ async def get_random_words(ctx, number:int):
   else:
     await ctx.send('no words has been found')
 
+@bot.command(name="give-words", help="write 75 words in chat")
+async def get_words_in_chat(ctx):
+  await ctx.send('working on it')
+  words = helper.get_random_words(75)
+  if words:
+    await ctx.send(words)
+  else:
+    await ctx.send('no words has been found')
+
 @bot.command(name="words-amount", help='print the amount of words in the DB')
 async def get_words_number(ctx):
   num = helper.get_words_number()
