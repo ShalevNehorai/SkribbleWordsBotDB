@@ -90,7 +90,9 @@ async def add_words(ctx, *, arg):
     else:
       await ctx.send(f'{word} containe non aturaize characters and not added to the list')
 
-  await ctx.send(f'{count_words} Words added to the list')
+  author = ctx.message.author
+  await ctx.send(f'{author.name} has added {count_words} word to the list')
+  await ctx.message.delete()
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -114,4 +116,3 @@ async def on_command_error(ctx, error):
 
 keep_alive()
 bot.run(TOKEN)
-
