@@ -29,10 +29,13 @@ def __add_word__(word, author, msg_date):
     print(f"word {word} alrady exists")
     
 def add_words(words):
+  MAX_WORD_LENGTH = 30
   words_list = words.split(',')
   for word in words_list:
     word = word.replace('\'', '')
-    if bool(re.match('[א-ת0-9\s]+$', word)):
+    if(len(word) > MAX_WORD_LENGTH):
+      print(f'{word} is to long, maximum characters allowed is ' + str(MAX_WORD_LENGTH) + " chracters")
+    if bool(re.match('[א-ת0-9\s?!]+$', word)):
       __add_word__(word, "Unknown", date.today())
     else:
       print(f'{word} containe non aturaize characters and not added to the list')
@@ -56,8 +59,7 @@ def get_random_words(number:int):
   return random.sample(list_words, k=number)
 
 def get_words_number():
-  count = words_collection.count_documents({})
-  return count
+  return words_collection.count_documents({})
 
 
 

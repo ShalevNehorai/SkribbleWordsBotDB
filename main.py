@@ -80,20 +80,26 @@ async def get_words_number(ctx):
 
 @bot.command(name='add-word', help='argu: arg:str add the coma separeted words in {arg} to the DB')
 async def add_words(ctx, *, arg):
+  MAX_WORD_LENGTH = 30
   word_list = arg.split(',')
   author = ctx.message.author
   msg_date = ctx.message.created_at
   count_words = 0
   for word in word_list:
     word = word.replace('\'', '')
-    if bool(re.match('[א-ת0-9\s]+$', word)):
+    if(len(word) > MAX_WORD_LENGTH):
+      await ctx.send(f'{word} is to long, maximum characters allowed is ' + str(MAX_WORD_LENGTH) + " chracters")
+    elif bool(re.match('[א-ת0-9\s?!]+$', word)):
       helper.__add_word__(word, author.name, msg_date)
       count_words += 1
     else:
       await ctx.send(f'{word} containe non aturaize characters and not added to the list')
 
   await ctx.send(f'{author.name} has added {count_words} word to the list')
-  await ctx.message.delete()
+  try:
+    await ctx.message.delete()
+  except:
+    pass
 
 @bot.event
 async def on_command_error(ctx, error):
