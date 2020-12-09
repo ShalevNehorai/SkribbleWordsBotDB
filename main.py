@@ -22,7 +22,7 @@ async def get_all_words(ctx):
   words = helper.get_all_words()
   if words:
     with open("words.txt", "w") as file:
-      file.write(words)
+      file.write(', '.join(words))
     with open("words.txt", "rb") as file:
       await ctx.send("Your file is:", file=discord.File(file, "words.txt"))
   else:
@@ -81,16 +81,17 @@ async def get_words_number(ctx):
 @bot.command(name='add-word', help='argu: arg:str add the coma separeted words in {arg} to the DB')
 async def add_words(ctx, *, arg):
   word_list = arg.split(',')
+  author = ctx.message.author
+  msg_date = ctx.message.created_at
   count_words = 0
   for word in word_list:
     word = word.replace('\'', '')
     if bool(re.match('[א-ת0-9\s]+$', word)):
-      helper.__add_word__(word)
+      helper.__add_word__(word, author.name, msg_date)
       count_words += 1
     else:
       await ctx.send(f'{word} containe non aturaize characters and not added to the list')
 
-  author = ctx.message.author
   await ctx.send(f'{author.name} has added {count_words} word to the list')
   await ctx.message.delete()
 
