@@ -62,26 +62,6 @@ def get_words_number():
   return words_collection.count_documents({})
 
 
-
-# def delete_word(word):  
-#   # matches = db.prefix(key)
-#   # if matches:
-#   #   del db[key]
-#   #   print(f'delete key: {key}')
-#   # else:
-#   #   print('the key not exists')
-#   result = words_collection.delete_one({"word": word})
-#   if(result):
-#     print("deleted")
-#   else:
-#     print("not deleted")
-
-# # def delete_all_list():
-# #   keys = db.keys()
-# #   for key in keys:
-# #     delete_key(key)
-# #   print('all keys deleted')
-
 # def insert_words_to_atlas(words):
 #   author = "Unknown"
 #   for word in words:

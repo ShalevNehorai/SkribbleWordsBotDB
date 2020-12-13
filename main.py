@@ -15,6 +15,7 @@ bot = commands.Bot(command_prefix='!')
 @bot.event
 async def on_ready():
   print(f'{bot.user.name} has connected to Discord!')
+  await bot.change_presence(activity=discord.Game('skribbl.io'))
 
 @bot.command(name="all-words", help="return file with all the words in the DB")
 async def get_all_words(ctx):
@@ -64,7 +65,7 @@ async def get_random_words(ctx, number:int):
   else:
     await ctx.send('no words has been found')
 
-@bot.command(name="give-words", help="write 75 words in chat")
+@bot.command(name="words-in-chat", help="write 75 words in chat")
 async def get_words_in_chat(ctx):
   await ctx.send('working on it')
   words = helper.get_random_words(75)
