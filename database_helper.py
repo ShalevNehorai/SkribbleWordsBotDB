@@ -4,7 +4,7 @@ import re
 import random
 import pymongo
 from dotenv import load_dotenv
-from datetime import date
+from datetime import date, timedelta
 # from replit import db
 
 load_dotenv()
@@ -40,8 +40,8 @@ def add_words(words):
     else:
       print(f'{word} containe non aturaize characters and not added to the list')
     
-def get_all_words():
-  wordsModel_list = words_collection.find()
+def get_all_words(limit=0):
+  wordsModel_list = words_collection.find().limit(limit)
   list_words = []
   for wordModel in wordsModel_list: 
     word = wordModel["word"];
@@ -49,17 +49,39 @@ def get_all_words():
   return list_words
 
 def get_first_words(number:int):
-  return get_all_words()[:number]
+  return add_aradelet(get_all_words(number))
 
 def get_last_words(number:int):
-  return get_all_words()[-number:]
+  return add_aradelet(get_all_words()[-number:])
 
 def get_random_words(number:int):
   list_words = get_all_words()
-  return random.sample(list_words, k=number)
+  return add_aradelet(random.sample(list_words, k=number))
 
-def get_words_number():
+def get_last_and_random_words(last_amount: int, random_amount: int):
+  last_words = get_last_words(last_amount)
+  random_words = get_all_words(count_words() - last_amount)
+  random_words = random.sample(random_words, k=random_amount)
+  return random_words + last_words
+
+def add_aradelet(words):
+  aradelet = "ארדלת"
+  if aradelet not in words:
+    words.append(aradelet)
+  return words
+
+def get_author(word):
+  wordModel = words_collection.find_one({"word": word.strip()})
+  if wordModel is not None:
+    return wordModel["author"]
+  return None
+
+def count_words():
   return words_collection.count_documents({})
+
+def count_new_words():
+  yesterday = date.today() - timedelta(1)
+  return words_collection.count_documents({"date": date.today().strftime("%d/%m/%Y")}) + words_collection.count_documents({"date": yesterday.strftime("%d/%m/%Y")})
 
 
 # def insert_words_to_atlas(words):

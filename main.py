@@ -17,6 +17,10 @@ async def on_ready():
   print(f'{bot.user.name} has connected to Discord!')
   await bot.change_presence(activity=discord.Game('skribbl.io'))
 
+@bot.command(name="play", help='send link to Skribbl.io')
+async def play(ctx):
+  await ctx.send("https://skribbl.io/")
+
 @bot.command(name="all-words", help="return file with all the words in the DB")
 async def get_all_words(ctx):
   await ctx.send('making the file')
@@ -74,10 +78,27 @@ async def get_words_in_chat(ctx):
   else:
     await ctx.send('no words has been found')
 
+@bot.command(name="shaffled-last-words", help='argu: last:int, random:int return file with {last} last words and {random} random words')
+async def get_last_and_random_words(ctx, last_amount:int, random_amount:int):
+  await ctx.send('making the file')
+  words = helper.get_last_and_random_words(last_amount, random_amount)
+  if words:
+    with open("words.txt", "w") as file:
+      file.write(', '.join(words))
+    with open("words.txt", "rb") as file:
+      await ctx.send("Your file is:", file=discord.File(file, "words.txt"))
+  else:
+    await ctx.send('no words has been found')
+
 @bot.command(name="words-amount", help='print the amount of words in the DB')
 async def get_words_number(ctx):
-  num = helper.get_words_number()
+  num = helper.count_words()
   await ctx.send(f'we have **{num}** words!')
+
+@bot.command(name="count-new-words", help='print the amount of words that added in the past 48 hours')
+async def count_new_words(ctx):
+  num = helper.count_new_words()
+  await ctx.send(f'**{num}** words added')
 
 @bot.command(name='add-word', help='argu: arg:str add the coma separeted words in {arg} to the DB')
 async def add_words(ctx, *, arg):
@@ -101,6 +122,14 @@ async def add_words(ctx, *, arg):
     await ctx.message.delete()
   except:
     pass
+
+@bot.command(name='word-author', help='argu: word:str print the word author')
+async def get_author(ctx, *, word):
+  author = helper.get_author(word)
+  if author is not None:
+    await ctx.send(f'**{author}** is the author')
+  else:
+    await ctx.send("Word is not existing")
 
 @bot.event
 async def on_command_error(ctx, error):
