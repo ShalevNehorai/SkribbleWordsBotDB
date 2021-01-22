@@ -15,6 +15,8 @@ mongo_client = pymongo.MongoClient(con_str)
 skribbl_words_db = mongo_client.skribbl_words_db
 words_collection = skribbl_words_db.words
 
+backup_collection = skribbl_words_db.words_backup
+
 # words_collection.create_index([('word', pymongo.ASCENDING)], unique = True)
 
 def __add_word__(word, author, msg_date):
@@ -33,6 +35,7 @@ def add_words(words):
   words_list = words.split(',')
   for word in words_list:
     word = word.replace('\'', '')
+    word = word.strip()
     if(len(word) > MAX_WORD_LENGTH):
       print(f'{word} is to long, maximum characters allowed is ' + str(MAX_WORD_LENGTH) + " chracters")
     if bool(re.match('[א-ת0-9\s?!]+$', word)):
@@ -83,27 +86,12 @@ def count_new_words():
   yesterday = date.today() - timedelta(1)
   return words_collection.count_documents({"date": date.today().strftime("%d/%m/%Y")}) + words_collection.count_documents({"date": yesterday.strftime("%d/%m/%Y")})
 
-
-# def insert_words_to_atlas(words):
-#   author = "Unknown"
-#   for word in words:
-#     wordModel = {
-#       "word": word.strip(),
-#       "author": author,
-#       "date": date.today().strftime("%d/%m/%Y")
-#     }
-#     try:
-#       words_collection.insert_one(wordModel)
-#     except pymongo.errors.DuplicateKeyError:
-#       print(f"word {word} alrady exists")
-
-# def move_forrepl_tomonde():
-#   keys = db.keys()
-#   words = []
-
-#   for i in keys:
-#     words.append(i)
-
-#   insert_words_to_atlas(words)
-#   print("done")
-  
+def copy_to_backup():
+  wordsModel_list = words_collection.find()
+  for word in wordsModel_list:
+    try:
+      words_collection.insert_one(word)
+    except pymongo.errors.DuplicateKeyError:
+      w = word["word"]
+      print(f"word {w} alrady exists")
+  print("done")

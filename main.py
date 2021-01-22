@@ -33,6 +33,18 @@ async def get_all_words(ctx):
   else:
     await ctx.send('no words has been found')
 
+@bot.command(name="all-indexed", help="return indexed file of all the words")
+async def get_all_words_sorted(ctx):
+  await ctx.send('making the file')
+  words = helper.get_all_words()
+  if words:
+    with open("words.txt", "w") as file:
+      file.write("\n".join([f'{i+1}: {w}' for i, w in enumerate(words)]))
+    with open("words.txt", "rb") as file:
+      await ctx.send("Your file is:", file=discord.File(file, "words.txt"))
+  else:
+    await ctx.send('no words has been found')
+
 @bot.command(name="first-words", help='argu: number:int return file with the {number} first words')
 async def get_first_words(ctx, number:int):
   await ctx.send('making the file')
@@ -78,7 +90,7 @@ async def get_words_in_chat(ctx):
   else:
     await ctx.send('no words has been found')
 
-@bot.command(name="shaffled-last-words", help='argu: last:int, random:int return file with {last} last words and {random} random words')
+@bot.command(name="shuffled-last-words", help='argu: last:int, random:int return file with {last} last words and {random} random words')
 async def get_last_and_random_words(ctx, last_amount:int, random_amount:int):
   await ctx.send('making the file')
   words = helper.get_last_and_random_words(last_amount, random_amount)
