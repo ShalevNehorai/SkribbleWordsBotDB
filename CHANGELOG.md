@@ -1,3 +1,21 @@
+# CHANGE LOG 5 - 2021-02-08
+
+## ADDED
+
+### BOT COMMANDS
+- first-last: send file with first and last words
+
+## CHANGES
+- help command now look better
+- change most of the command names to simpler one
+- merge shuffled-new-words command with random command, random command now can get optional value to send file with some last words and some random words
+
+## DELETED
+- shaffled-last-words command was deleted
+- play command was deleted
+
+---
+
 # CHANGE LOG 4 - 2020-12-16
 
 ## ADDED

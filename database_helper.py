@@ -52,20 +52,28 @@ def get_all_words(limit=0):
   return list_words
 
 def get_first_words(number:int):
+  if number == 0:
+    return None
   return add_aradelet(get_all_words(number))
 
 def get_last_words(number:int):
+  if number == 0:
+    return None
   return add_aradelet(get_all_words()[-number:])
 
-def get_random_words(number:int):
-  list_words = get_all_words()
-  return add_aradelet(random.sample(list_words, k=number))
-
-def get_last_and_random_words(last_amount: int, random_amount: int):
+def get_random_words(random_amount:int, last_amount = 0):
   last_words = get_last_words(last_amount)
   random_words = get_all_words(count_words() - last_amount)
   random_words = random.sample(random_words, k=random_amount)
+  if last_words == None:
+    return add_aradelet(random_words)
   return random_words + last_words
+
+def get_first_last(number:int):
+  try:
+    return get_first_words(number) + get_last_words(number)
+  except TypeError:
+    return None
 
 def add_aradelet(words):
   aradelet = "ארדלת"
@@ -90,7 +98,7 @@ def copy_to_backup():
   wordsModel_list = words_collection.find()
   for word in wordsModel_list:
     try:
-      words_collection.insert_one(word)
+      backup_collection.insert_one(word)
     except pymongo.errors.DuplicateKeyError:
       w = word["word"]
       print(f"word {w} alrady exists")
