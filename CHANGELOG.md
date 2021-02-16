@@ -1,3 +1,16 @@
+# CHANGE LOG 6 - 2021-02-16
+
+## ADDED
+
+### BOT COMMANDS
+- stats-all: print the amount of words that each author has added to the DB
+- stast-new: print the amount of words that each author has added to the DB in the last 48 hours
+
+## CHANGES
+- all-indexed command now called indexed
+
+---
+
 # CHANGE LOG 5 - 2021-02-08
 
 ## ADDED

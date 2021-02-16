@@ -87,12 +87,53 @@ def get_author(word):
     return wordModel["author"]
   return None
 
+def get_all_authors():
+  return words_collection.distinct("author")
+
+def get_new_authors():
+  yesterday = date.today() - timedelta(1)
+  authors = words_collection.distinct("author", {"date": date.today().strftime("%d/%m/%Y")})
+  yester_authors = words_collection.distinct("author", {"date": yesterday.strftime("%d/%m/%Y")})
+
+  for author in yester_authors:
+    if author not in authors:
+      authors.append(author)
+
+  return authors
+
 def count_words():
   return words_collection.count_documents({})
 
 def count_new_words():
   yesterday = date.today() - timedelta(1)
   return words_collection.count_documents({"date": date.today().strftime("%d/%m/%Y")}) + words_collection.count_documents({"date": yesterday.strftime("%d/%m/%Y")})
+
+def count_by_author(author):
+  return words_collection.count_documents({"author": author})
+
+def count_by_author_new(author):
+  yesterday = date.today() - timedelta(1)
+  return words_collection.count_documents({"author": author, "date": date.today().strftime("%d/%m/%Y")}) + words_collection.count_documents({"author": author, "date": yesterday.strftime("%d/%m/%Y")})
+
+def takeSecond(elem):
+    return elem[1]
+def stats_all():
+  stats = []
+  authors = get_all_authors()
+  for author in authors:
+    count = count_by_author(author)
+    stats.append((author, count))
+  stats.sort(key=takeSecond, reverse=True)
+  return stats
+
+def stats_new():
+  stats = []
+  authors = get_new_authors()
+  for author in authors:
+    count = count_by_author_new(author)
+    stats.append((author, count))
+  stats.sort(key=takeSecond, reverse=True)
+  return stats
 
 def copy_to_backup():
   wordsModel_list = words_collection.find()

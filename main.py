@@ -37,7 +37,7 @@ async def get_all_words(ctx):
   words = helper.get_all_words()
   await send_words_file(ctx, words)
 
-@bot.command(name="all-indexed", help="return indexed file of all the words")
+@bot.command(name="indexed", help="return indexed file of all the words")
 async def get_all_words_sorted(ctx):
   await ctx.send('making the file')
   words = helper.get_all_words()
@@ -92,6 +92,34 @@ async def count_new_words(ctx):
   num = helper.count_new_words()
   await ctx.send(f'**{num}** words added')
 
+# @bot.command(name="count-my" )
+# async def count_my_words(ctx):
+#   author = ctx.message.author
+#   num = helper.count_by_author(author.name)
+#   await ctx.send(f'{author.name} you wrote **{num}** words')
+
+@bot.command(name='author', help='argu: word:str print the word author')
+async def get_author(ctx, *, word):
+  author = helper.get_author(word)
+  if author is not None:
+    await ctx.send(f'**{author}** is the author')
+  else:
+    await ctx.send("Word not found")
+
+@bot.command(name='stats-all', help="print the number of words each author added to the DB")
+async def get_stats(ctx):
+  await write_stats(ctx, helper.stats_all())
+
+@bot.command(name='stats-new', help="print the number of words each author added to the DB in the last 48 hours")
+async def get_stats_new(ctx):
+  await write_stats(ctx, helper.stats_new())
+
+async def write_stats(ctx, stats):
+  msg = ""
+  for stat in stats:
+    msg += f'{stat[0]} wrote **{stat[1]}** new words\n'
+  await ctx.send(msg)
+
 @bot.command(name='add', help='argu: arg:str add the coma separeted words in {arg} to the DB')
 async def add_words(ctx, *, arg):
   MAX_WORD_LENGTH = 30
@@ -114,14 +142,6 @@ async def add_words(ctx, *, arg):
     await ctx.message.delete()
   except:
     pass
-
-@bot.command(name='author', help='argu: word:str print the word author')
-async def get_author(ctx, *, word):
-  author = helper.get_author(word)
-  if author is not None:
-    await ctx.send(f'**{author}** is the author')
-  else:
-    await ctx.send("Word not found")
 
 @bot.command(name="help", help="show this message")
 async def help(ctx, command=None):
