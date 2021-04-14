@@ -6,6 +6,10 @@ from dotenv import load_dotenv
 from keep_alive import keep_alive
 import database_helper as helper
 
+from docx import Document
+from docx.shared import Pt
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+
 load_dotenv()
 
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -117,7 +121,7 @@ async def get_stats_new(ctx):
 async def write_stats(ctx, stats):
   msg = ""
   for stat in stats:
-    msg += f'{stat[0]} wrote **{stat[1]}** new words\n'
+    msg += f'{stat[0]} wrote **{stat[1]}** words\n'
   await ctx.send(msg)
 
 @bot.command(name='add', help='argu: arg:str add the coma separeted words in {arg} to the DB')
@@ -142,6 +146,24 @@ async def add_words(ctx, *, arg):
     await ctx.message.delete()
   except:
     pass
+
+@bot.command(name='CODENAME', help="send docx file with table of random words")
+async def CODENAME(ctx):
+  words = helper.get_random_words(25)
+  document = Document()
+  table = document.add_table(rows=5, cols=5)
+  table.style = document.styles['Table Grid']
+  i = 0
+  for row in table.rows:
+    for cell in row.cells:
+      cell.text = words[i]
+      i += 1
+      cell.paragraphs[0].alignment=WD_ALIGN_PARAGRAPH.CENTER
+      cell.paragraphs[0].runs[0].font.size = Pt(20)
+  document.save("table.docx")
+  with open('table.docx', 'rb') as file:
+    await ctx.send("Your file is:", file=discord.File(file, "words.docx"))
+
 
 @bot.command(name="help", help="show this message")
 async def help(ctx, command=None):
